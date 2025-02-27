@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package fileserver;
+
+option go_package = "./fileserver/proto;fileserver"; 
+
+service FileService {
+  rpc UploadFile(FileUploadReq) returns (UploadResp);
+  rpc DownloadFile(FileDownloadReq) returns (DownloadResp);
+  rpc DeleteFile(FileDeleteReq) returns (DeleteResp);
+  rpc register(ChunkServerRegisterReq) returns (RegisterResp);
+}
+
+message ChunkServer {
+    string address = 1;
+}
+
+message FileUploadReq {
+  string filename = 1;
+  int32 size = 2; 
+}
+
+message UploadResp {
+  string message = 1;
+  bool success = 2;
+  string file_id = 3;
+  repeated ChunkServer chunk_servers = 5; 
+}
+
+message FileDownloadReq {
+    string file_id = 1;
+}
+
+message DownloadResp {
+    repeated ChunkServer chunk_servers = 1; 
+}
+
+message FileDeleteReq {
+    string file_id = 1;
+}
+
+message DeleteResp {
+    repeated ChunkServer chunk_servers = 1; 
+}
+
+message ChunkServerRegisterReq {
+    string address = 1;
+    bytes token = 2;
+}
+
+message RegisterResp {
+    bytes secret_key = 1;
+}
