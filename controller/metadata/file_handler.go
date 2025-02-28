@@ -21,6 +21,7 @@ type File struct {
 }
 
 func newFile(id string, userId string, acl *acl.ACL, size int64) *File {
+
 	var chunks [][]*ChunkServer
 	for _, k := range generateChunks(id, size) {
 		chunks = append(chunks, []*ChunkServer{k})
@@ -31,6 +32,7 @@ func newFile(id string, userId string, acl *acl.ACL, size int64) *File {
 		acl:    acl,
 		Size:   size,
 		Chunks: chunks,
+		mu:     sync.RWMutex{},
 	}
 }
 
@@ -55,12 +57,14 @@ func (t *File) GetID() string {
 
 func generateChunks(fileId string, size int64) []*ChunkServer {
 	chunkSize := config.LoadConfig().Chunk.Size
+
 	count := size / chunkSize
 	if size%chunkSize != 0 {
 		count++
 	}
 
 	var servers []*ChunkServer
+
 	allChunkServers := GetChunkServerMetadata().GetAllChunkServers()
 	loadbalancer := loadbalancing.NewConsistentHashing()
 	for i := range count {
@@ -72,10 +76,11 @@ func generateChunks(fileId string, size int64) []*ChunkServer {
 
 // FileController provide API for file system metadata
 type FileController struct {
+	mu    sync.RWMutex
 	files map[string]*File
 }
 
-var fileController = &FileController{files: make(map[string]*File)}
+var fileController = &FileController{files: make(map[string]*File), mu: sync.RWMutex{}}
 
 func GetFileController() *FileController {
 	return fileController
@@ -83,22 +88,31 @@ func GetFileController() *FileController {
 
 func (t *FileController) Create(id string, userId string, acl *acl.ACL, size int64) *File {
 	file := newFile(id, userId, acl, size)
+	t.mu.Lock()
 	t.files[id] = file
+	t.mu.Unlock()
 	return file
 }
 
 func (t *FileController) Delete(id string) (*File, error) {
+	t.mu.Lock()
 	if _, ok := t.files[id]; !ok {
+		t.mu.Unlock()
 		return nil, fmt.Errorf("failed to fetch file with fileId: %s", id)
 	}
 	file := t.files[id]
 	delete(t.files, id)
+	t.mu.Unlock()
 	return file, nil
 }
 
 func (t *FileController) Get(id string) (*File, error) {
+	t.mu.RLock()
 	if _, ok := t.files[id]; !ok {
+		t.mu.RUnlock()
 		return nil, fmt.Errorf("failed to fetch file with fileId: %s", id)
 	}
-	return t.files[id], nil
+	res := t.files[id]
+	t.mu.RUnlock()
+	return res, nil
 }

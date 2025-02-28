@@ -3,7 +3,8 @@ package server
 import (
 	"context"
 	"fmt"
-	"log"
+
+	"github.com/charmbracelet/log"
 
 	"github.com/nanoDFS/Master/controller/acl"
 	"github.com/nanoDFS/Master/controller/metadata"
@@ -20,8 +21,8 @@ func (t Server) DownloadFile(ctx context.Context, req *fileserver.FileDownloadRe
 	token, _ := acl.NewJWT().Generate(&acl.Claims{UserId: file.GetUserID(), Access: *file.GetACL(), Size: file.Size})
 	chunk_servers := getChunkServers(file)
 
-	log.Printf("File download has been initiated successfully for fileId: %s", req.GetFileId())
-	log.Printf("Selected chunk servers: %s", chunk_servers)
+	log.Infof("File download has been initiated successfully for fileId: %s", req.GetFileId())
+	log.Debugf("Selected chunk servers: %s", chunk_servers)
 	return &fileserver.DownloadResp{
 		ChunkServers: chunk_servers,
 		AccessToken:  token,

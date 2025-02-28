@@ -2,8 +2,10 @@ package test
 
 import (
 	"context"
-	"log"
+
 	"testing"
+
+	"github.com/charmbracelet/log"
 
 	"github.com/nanoDFS/Master/server"
 	fileserver "github.com/nanoDFS/Master/server/proto"
@@ -31,7 +33,7 @@ func TestRegister(t *testing.T) {
 
 	conn, err := grpc.NewClient(port, grpc.WithInsecure())
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		log.Errorf("did not connect: %v", err)
 	}
 	defer conn.Close()
 
@@ -54,7 +56,7 @@ func TestUploadAndDelete(t *testing.T) {
 
 	conn, err := grpc.NewClient(port, grpc.WithInsecure())
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		t.Errorf("did not connect: %v", err)
 	}
 	defer conn.Close()
 	client := fileserver.NewFileServiceClient(conn)
@@ -102,7 +104,7 @@ func TestStop(t *testing.T) {
 
 	conn, err := grpc.NewClient(port, grpc.WithInsecure())
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		t.Errorf("did not connect: %v", err)
 	}
 	defer conn.Close()
 

@@ -3,7 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
+
+	"github.com/charmbracelet/log"
 
 	"github.com/nanoDFS/Master/server"
 	fileserver "github.com/nanoDFS/Master/server/proto"
@@ -19,20 +20,22 @@ func createSingleMaster(port string) {
 }
 
 func main() {
+	utils.InitLog()
+
 	createSingleMaster(":9000")
 	createSingleMaster(":8000")
 	createSingleMaster(":8004")
 
-	go test(":9000")
-	go test(":8000")
-	go test(":8004")
+	go test(":9000", 0)
+	go test(":8000", 1)
+	go test(":8004", 2)
 	select {}
 }
 
-func test(port string) {
+func test(port string, rid int) {
 	conn, err := grpc.NewClient(port, grpc.WithInsecure())
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		log.Errorf("did not connect: %v", err)
 	}
 	defer conn.Close()
 	client := fileserver.NewFileServiceClient(conn)
@@ -45,10 +48,10 @@ func test(port string) {
 		}
 	}()
 
-	for i := range 4 {
+	for i := range 10 {
 		client.UploadFile(context.Background(), &fileserver.FileUploadReq{
-			FileId: fmt.Sprintf("some-user-generated-file-id-%d", i),
-			UserId: fmt.Sprintf("some-user-id-%d", i),
+			FileId: fmt.Sprintf("some-user-generated-file-id-%d-%d", i, rid),
+			UserId: fmt.Sprintf("some-user-id-%d-%d", i, rid),
 			Size:   180,
 		})
 	}
