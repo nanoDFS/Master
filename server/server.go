@@ -1,8 +1,9 @@
 package server
 
 import (
-	"log"
 	"net"
+
+	"github.com/charmbracelet/log"
 
 	"github.com/nanoDFS/Master/controller/metadata"
 	fileserver "github.com/nanoDFS/Master/server/proto"
@@ -37,9 +38,9 @@ func NewMasterServerRunner(addr string) (*MasterServer, error) {
 
 func (t *MasterServer) Listen() error {
 	go func() {
-		log.Printf("started listening on port: %s", t.Addr)
+		log.Infof("started listening on port: %s", t.Addr)
 		if err := t.server.Serve(*t.listener); err != nil {
-			log.Printf("failed to listen on port %s", t.Addr)
+			log.Errorf("failed to listen on port %s", t.Addr)
 		}
 	}()
 	return nil

@@ -1,8 +1,10 @@
 package config
 
 import (
-	"io/ioutil"
-	"log"
+	"os"
+	"sync"
+
+	"github.com/charmbracelet/log"
 
 	"gopkg.in/yaml.v3"
 )
@@ -13,13 +15,16 @@ type Config struct {
 	} `yaml:"Chunk"`
 }
 
+var mu sync.RWMutex = sync.RWMutex{}
 var config *Config
 
 func LoadConfig() *Config {
+	mu.Lock()
+	defer mu.Unlock()
 	if config != nil {
 		return config
 	}
-	data, err := ioutil.ReadFile("/Users/nagarajpoojari/Desktop/learn/nanoDFS/Master/config.yaml")
+	data, err := os.ReadFile("/Users/nagarajpoojari/Desktop/learn/nanoDFS/Master/config.yaml")
 	if err != nil {
 		log.Fatalf("error reading file: %v", err)
 	}
@@ -28,6 +33,6 @@ func LoadConfig() *Config {
 	if err != nil {
 		log.Fatalf("error unmarshalling yaml: %v", err)
 	}
-	log.Printf("Successfully loaded config: %v", config)
+	log.Infof("Successfully loaded config: %v", config)
 	return config
 }

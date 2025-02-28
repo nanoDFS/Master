@@ -3,7 +3,8 @@ package server
 import (
 	"context"
 	"fmt"
-	"log"
+
+	"github.com/charmbracelet/log"
 
 	"github.com/nanoDFS/Master/controller/acl"
 	"github.com/nanoDFS/Master/controller/metadata"
@@ -21,8 +22,8 @@ func (t Server) DeleteFile(ctx context.Context, req *fileserver.FileDeleteReq) (
 
 	chunk_servers := getChunkServers(file)
 
-	log.Printf("File delete has been initiated successfully for fileId: %s", req.GetFileId())
-	log.Printf("Selected chunk servers: %s", chunk_servers)
+	log.Infof("File delete has been initiated successfully for fileId: %s", req.GetFileId())
+	log.Debugf("Selected chunk servers: %s", chunk_servers)
 	return &fileserver.DeleteResp{
 		ChunkServers: chunk_servers,
 		AccessToken:  token,
