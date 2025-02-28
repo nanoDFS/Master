@@ -45,7 +45,7 @@ func TestRegister(t *testing.T) {
 	}
 
 }
-func TestUpload(t *testing.T) {
+func TestUploadAndDelete(t *testing.T) {
 	port := utils.RandLocalAddr()
 	master, _ := server.NewMasterServerRunner(port)
 	if err := master.Listen(); err != nil {
@@ -71,8 +71,22 @@ func TestUpload(t *testing.T) {
 		UserId: "some-user-id",
 		Size:   180,
 	})
+
 	if err != nil {
 		t.Errorf("failed to upload file, %v", err)
+	}
+
+	_, err = client.DownloadFile(context.Background(), &fileserver.FileDownloadReq{
+		FileId: "some-user-generated-file-id",
+	})
+	if err != nil {
+		t.Errorf("failed to delete file, %v", err)
+	}
+	_, err = client.DeleteFile(context.Background(), &fileserver.FileDeleteReq{
+		FileId: "some-user-generated-file-id",
+	})
+	if err != nil {
+		t.Errorf("failed to delete file, %v", err)
 	}
 
 }

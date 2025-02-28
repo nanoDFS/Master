@@ -8,7 +8,7 @@ import (
 )
 
 func Load() {
-	err := godotenv.Load("/Users/nagarajpoojari/Desktop/learn/nanoDFS/Master/utils/secrets/.env")
+	err := godotenv.Load("/Users/nagarajpoojari/Desktop/learn/nanoDFS/Master/.env")
 	if err != nil {
 		log.Fatalf("Error loading .env file, %v", err)
 	}

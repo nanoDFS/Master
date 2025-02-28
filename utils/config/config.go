@@ -19,7 +19,7 @@ func LoadConfig() *Config {
 	if config != nil {
 		return config
 	}
-	data, err := ioutil.ReadFile("/Users/nagarajpoojari/Desktop/learn/nanoDFS/Master/utils/config/config.yaml")
+	data, err := ioutil.ReadFile("/Users/nagarajpoojari/Desktop/learn/nanoDFS/Master/config.yaml")
 	if err != nil {
 		log.Fatalf("error reading file: %v", err)
 	}

@@ -14,7 +14,7 @@ type File struct {
 	id     string
 	userId string
 	acl    *acl.ACL
-	size   int64
+	Size   int64
 	Chunks [][]*ChunkServer
 
 	mu sync.RWMutex
@@ -29,7 +29,7 @@ func newFile(id string, userId string, acl *acl.ACL, size int64) *File {
 		id:     id,
 		userId: userId,
 		acl:    acl,
-		size:   size,
+		Size:   size,
 		Chunks: chunks,
 	}
 }
@@ -70,6 +70,7 @@ func generateChunks(fileId string, size int64) []*ChunkServer {
 	return servers
 }
 
+// FileController provide API for file system metadata
 type FileController struct {
 	files map[string]*File
 }
@@ -84,4 +85,20 @@ func (t *FileController) Create(id string, userId string, acl *acl.ACL, size int
 	file := newFile(id, userId, acl, size)
 	t.files[id] = file
 	return file
+}
+
+func (t *FileController) Delete(id string) (*File, error) {
+	if _, ok := t.files[id]; !ok {
+		return nil, fmt.Errorf("failed to fetch file with fileId: %s", id)
+	}
+	file := t.files[id]
+	delete(t.files, id)
+	return file, nil
+}
+
+func (t *FileController) Get(id string) (*File, error) {
+	if _, ok := t.files[id]; !ok {
+		return nil, fmt.Errorf("failed to fetch file with fileId: %s", id)
+	}
+	return t.files[id], nil
 }
