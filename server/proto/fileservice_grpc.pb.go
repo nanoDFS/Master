@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.29.3
-// source: proto/fileserver.proto
+// source: proto/fileservice.proto
 
 package fileserver
 
@@ -231,5 +231,5 @@ var FileService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/fileserver.proto",
+	Metadata: "proto/fileservice.proto",
 }
