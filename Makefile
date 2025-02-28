@@ -22,6 +22,10 @@ deps:
 proto:
 	protoc --go_out=. --go-grpc_out=. proto/*.proto
 
+push:
+	git add .
+	git commit -m "$(m)"
+	git push origin main
 
 req: 
 	echo "$(msg)" | nc 127.0.0.1 9000

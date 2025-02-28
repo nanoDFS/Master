@@ -1,7 +1,6 @@
 package metadata
 
 import (
-	"log"
 	"sync"
 
 	"fmt"
@@ -64,7 +63,6 @@ func generateChunks(fileId string, size int64) []*ChunkServer {
 	var servers []*ChunkServer
 	allChunkServers := GetChunkServerMetadata().GetAllChunkServers()
 	loadbalancer := loadbalancing.NewConsistentHashing()
-	log.Printf("total number of chunk servers: %d", len(allChunkServers))
 	for i := range count {
 		index := loadbalancer.GetIndex(fileId+fmt.Sprint(i), len(allChunkServers))
 		servers = append(servers, allChunkServers[index])

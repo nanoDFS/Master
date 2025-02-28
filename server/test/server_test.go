@@ -7,11 +7,12 @@ import (
 
 	"github.com/nanoDFS/Master/server"
 	fileserver "github.com/nanoDFS/Master/server/proto"
+	"github.com/nanoDFS/Master/utils"
 	"google.golang.org/grpc"
 )
 
 func TestNewMasterServerRunner(t *testing.T) {
-	port := ":8000"
+	port := utils.RandLocalAddr()
 	master, err := server.NewMasterServerRunner(port)
 	if err != nil {
 		t.Errorf("failed to start server: %v", err)
@@ -22,7 +23,7 @@ func TestNewMasterServerRunner(t *testing.T) {
 }
 
 func TestRegister(t *testing.T) {
-	port := ":8003"
+	port := utils.RandLocalAddr()
 	master, _ := server.NewMasterServerRunner(port)
 	if err := master.Listen(); err != nil {
 		t.Errorf("failed to start listening at port: %s : %v", port, err)
@@ -36,7 +37,7 @@ func TestRegister(t *testing.T) {
 
 	client := fileserver.NewFileServiceClient(conn)
 	resp, _ := client.Register(context.Background(), &fileserver.ChunkServerRegisterReq{
-		Address: ":8000",
+		Address: utils.RandLocalAddr(),
 	})
 	expected := fileserver.RegisterResp{Status: true}
 	if resp.String() != expected.String() {
@@ -45,7 +46,7 @@ func TestRegister(t *testing.T) {
 
 }
 func TestUpload(t *testing.T) {
-	port := ":8003"
+	port := utils.RandLocalAddr()
 	master, _ := server.NewMasterServerRunner(port)
 	if err := master.Listen(); err != nil {
 		t.Errorf("failed to start listening at port: %s : %v", port, err)
@@ -59,10 +60,10 @@ func TestUpload(t *testing.T) {
 	client := fileserver.NewFileServiceClient(conn)
 
 	client.Register(context.Background(), &fileserver.ChunkServerRegisterReq{
-		Address: ":8000",
+		Address: utils.RandLocalAddr(),
 	})
 	client.Register(context.Background(), &fileserver.ChunkServerRegisterReq{
-		Address: ":8002",
+		Address: utils.RandLocalAddr(),
 	})
 
 	_, err = client.UploadFile(context.Background(), &fileserver.FileUploadReq{
@@ -77,7 +78,7 @@ func TestUpload(t *testing.T) {
 }
 
 func TestStop(t *testing.T) {
-	port := ":8001"
+	port := utils.RandLocalAddr()
 	master, _ := server.NewMasterServerRunner(port)
 	if err := master.Listen(); err != nil {
 		t.Errorf("failed to start listening at port: %s : %v", port, err)
@@ -93,7 +94,7 @@ func TestStop(t *testing.T) {
 
 	client := fileserver.NewFileServiceClient(conn)
 	_, err = client.Register(context.Background(), &fileserver.ChunkServerRegisterReq{
-		Address: ":8000",
+		Address: utils.RandLocalAddr(),
 	})
 	if err == nil {
 		t.Errorf("failed to close server")

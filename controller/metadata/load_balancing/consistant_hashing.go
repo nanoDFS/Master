@@ -2,6 +2,8 @@ package loadbalancing
 
 import (
 	"hash/fnv"
+
+	"github.com/nanoDFS/Master/utils/crypto"
 )
 
 type ConsistentHashing struct {
@@ -18,7 +20,7 @@ func (ch *ConsistentHashing) hashKey(key string) uint32 {
 }
 
 func (ch *ConsistentHashing) GetIndex(key string, length int) int {
-	hash := ch.hashKey(key)
-	index := int(hash) % length
+	fullyHashedString := crypto.HashSHA256(key)
+	index := int(ch.hashKey(fullyHashedString)) % length
 	return index
 }

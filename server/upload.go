@@ -13,11 +13,7 @@ func (t Server) UploadFile(ctx context.Context, req *fileserver.FileUploadReq) (
 	fileHandler := metadata.GetFileController()
 	access := acl.NewACL(req.UserId)
 	file := fileHandler.Create(req.FileId, req.UserId, access, req.Size)
-	token, err := acl.NewJWT().Generate(&acl.Claims{UserId: req.UserId, Access: *access, Size: req.Size})
-	if err != nil {
-		log.Printf("error generating access token, %v\n", err)
-		return nil, err
-	}
+	token, _ := acl.NewJWT().Generate(&acl.Claims{UserId: req.UserId, Access: *access, Size: req.Size})
 
 	var chunk_servers []*fileserver.ChunkServer
 	for _, server := range file.Chunks {
