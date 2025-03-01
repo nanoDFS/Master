@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package filemetadata;
+
+option go_package = "./server/file_metadata/proto;filemetadata"; 
+
+service FileMetadataService {
+  rpc UploadFile(FileUploadReq) returns (UploadResp);
+  rpc DownloadFile(FileDownloadReq) returns (DownloadResp);
+  rpc DeleteFile(FileDeleteReq) returns (DeleteResp);
+}
+
+message ChunkServer {
+    string address = 1;
+}
+
+message FileUploadReq {
+  string file_id = 1;
+  string user_id = 2;
+  int64 size = 3; 
+}
+
+message UploadResp {
+  string message = 1;
+  bool success = 2;
+  repeated ChunkServer chunk_servers = 3; 
+  bytes access_token =  4;
+
+}
+
+message FileDownloadReq {
+    string file_id = 1;
+}
+
+message DownloadResp {
+    repeated ChunkServer chunk_servers = 1; 
+    bytes access_token = 2;
+}
+
+message FileDeleteReq {
+    string file_id = 1;
+}
+
+message DeleteResp {
+    repeated ChunkServer chunk_servers = 1; 
+    bytes access_token = 2;
+}
