@@ -4,7 +4,7 @@ import (
 	"net"
 
 	"github.com/charmbracelet/log"
-	css "github.com/nanoDFS/Master/server/chunk_server_metadata/proto"
+	css "github.com/nanoDFS/Master/server/chunkserver/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )

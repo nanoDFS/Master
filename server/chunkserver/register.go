@@ -6,7 +6,7 @@ import (
 	"github.com/charmbracelet/log"
 
 	chunk_server "github.com/nanoDFS/Master/controller/metadata"
-	css "github.com/nanoDFS/Master/server/chunk_server_metadata/proto"
+	css "github.com/nanoDFS/Master/server/chunkserver/proto"
 )
 
 func (t Server) Register(ctx context.Context, req *css.ChunkServerRegisterReq) (*css.RegisterResp, error) {
