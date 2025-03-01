@@ -9,10 +9,8 @@ import (
 type Status int
 
 const (
-	Pending    Status = iota // 0
-	InProgress               // 1
-	Completed                // 2
-	Failed                   // 3
+	Active   Status = iota // 0
+	Inactive               // 1
 )
 
 type ChunkServer struct {

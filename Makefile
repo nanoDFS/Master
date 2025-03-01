@@ -28,7 +28,7 @@ push:
 	git push origin main
 
 req: 
-	echo "$(msg)" | nc 127.0.0.1 9000
+	echo "$(msg)" | nc 127.0.0.1 8080
 
 default: build
 

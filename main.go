@@ -22,6 +22,7 @@ func createSingleMaster(port string) {
 
 func main() {
 	utils.InitLog()
+
 	port := ":8080"
 	server, _ := transport.NewTCPTransport(port)
 	if err := server.Listen(); err != nil {
