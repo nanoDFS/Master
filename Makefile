@@ -5,6 +5,7 @@ build:
 	go build -o $(BINARY_NAME) $(SRC)
 
 run:
+	make build 
 	go run $(SRC)
 
 test:
