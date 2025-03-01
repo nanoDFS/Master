@@ -16,7 +16,7 @@ func (t Server) UploadFile(ctx context.Context, req *fms.FileUploadReq) (*fms.Up
 	log.Debugf("Waiting : %s", req.FileId)
 	file := fileHandler.Create(req.FileId, req.UserId, access, req.Size)
 
-	token, _ := acl.NewJWT().Generate(&acl.Claims{UserId: req.UserId, Access: *file.GetACL(), Size: req.Size})
+	token, _ := acl.NewJWT().Generate(&acl.Claims{UserId: req.UserId, FileId: req.FileId, Access: *file.GetACL(), Size: req.Size})
 
 	chunk_servers := getChunkServers(file)
 

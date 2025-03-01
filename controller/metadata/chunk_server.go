@@ -55,10 +55,10 @@ func (t *ChunkServer) SetSpaces(space int64) {
 
 type ChunkServerMetadata struct {
 	mu           sync.RWMutex
-	ChunkServers map[string]*ChunkServer
+	chunkServers map[string]*ChunkServer
 }
 
-var chunkServerMetadataInstance = &ChunkServerMetadata{ChunkServers: make(map[string]*ChunkServer), mu: sync.RWMutex{}}
+var chunkServerMetadataInstance = &ChunkServerMetadata{chunkServers: make(map[string]*ChunkServer), mu: sync.RWMutex{}}
 
 func GetChunkServerMetadata() *ChunkServerMetadata {
 	return chunkServerMetadataInstance
@@ -67,20 +67,20 @@ func GetChunkServerMetadata() *ChunkServerMetadata {
 func (t *ChunkServerMetadata) Register(addr string, space int64) {
 	tcp_addr, _ := net.ResolveTCPAddr("tcp", addr)
 	t.mu.Lock()
-	t.ChunkServers[addr] = NewChunkServer(tcp_addr, space)
+	t.chunkServers[addr] = NewChunkServer(tcp_addr, space)
 	t.mu.Unlock()
 }
 
 func (t *ChunkServerMetadata) Drop(addr string) {
 	t.mu.Lock()
-	delete(t.ChunkServers, addr)
+	delete(t.chunkServers, addr)
 	t.mu.Unlock()
 }
 
 func (t *ChunkServerMetadata) GetAllChunkServers() []*ChunkServer {
 	var servers []*ChunkServer
 	t.mu.RLock()
-	for _, v := range t.ChunkServers {
+	for _, v := range t.chunkServers {
 		servers = append(servers, v)
 	}
 	t.mu.RUnlock()
@@ -89,11 +89,11 @@ func (t *ChunkServerMetadata) GetAllChunkServers() []*ChunkServer {
 
 func (t *ChunkServerMetadata) GetChunkServer(addr string) (*ChunkServer, error) {
 	t.mu.RLock()
-	if _, ok := t.ChunkServers[addr]; !ok {
+	if _, ok := t.chunkServers[addr]; !ok {
 		t.mu.RUnlock()
 		return nil, fmt.Errorf("failed to fetch chunk server")
 	}
-	res := t.ChunkServers[addr]
+	res := t.chunkServers[addr]
 	t.mu.RUnlock()
 	return res, nil
 }

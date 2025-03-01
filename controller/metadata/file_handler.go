@@ -11,11 +11,11 @@ import (
 )
 
 type File struct {
-	id     string
-	userId string
-	acl    *acl.ACL
-	Size   int64
-	Chunks [][]*ChunkServer
+	id      string
+	ownerId string
+	acl     *acl.ACL
+	Size    int64
+	Chunks  [][]*ChunkServer
 
 	mu sync.RWMutex
 }
@@ -27,12 +27,12 @@ func newFile(id string, userId string, acl *acl.ACL, size int64) *File {
 		chunks = append(chunks, []*ChunkServer{k})
 	}
 	return &File{
-		id:     id,
-		userId: userId,
-		acl:    acl,
-		Size:   size,
-		Chunks: chunks,
-		mu:     sync.RWMutex{},
+		id:      id,
+		ownerId: userId,
+		acl:     acl,
+		Size:    size,
+		Chunks:  chunks,
+		mu:      sync.RWMutex{},
 	}
 }
 
@@ -42,9 +42,9 @@ func (t *File) GetACL() *acl.ACL {
 	t.mu.RUnlock()
 	return acl_
 }
-func (t *File) GetUserID() string {
+func (t *File) GetOwnerID() string {
 	t.mu.RLock()
-	id := t.userId
+	id := t.ownerId
 	t.mu.RUnlock()
 	return id
 }
@@ -74,7 +74,7 @@ func generateChunks(fileId string, size int64) []*ChunkServer {
 	return servers
 }
 
-// FileController provide API for file system metadata
+// FileController is a singleton class, provides API for file system metadata
 type FileController struct {
 	mu    sync.RWMutex
 	files map[string]*File
@@ -96,23 +96,21 @@ func (t *FileController) Create(id string, userId string, acl *acl.ACL, size int
 
 func (t *FileController) Delete(id string) (*File, error) {
 	t.mu.Lock()
+	defer t.mu.Unlock()
 	if _, ok := t.files[id]; !ok {
-		t.mu.Unlock()
 		return nil, fmt.Errorf("failed to fetch file with fileId: %s", id)
 	}
 	file := t.files[id]
 	delete(t.files, id)
-	t.mu.Unlock()
 	return file, nil
 }
 
 func (t *FileController) Get(id string) (*File, error) {
 	t.mu.RLock()
+	defer t.mu.RUnlock()
 	if _, ok := t.files[id]; !ok {
-		t.mu.RUnlock()
 		return nil, fmt.Errorf("failed to fetch file with fileId: %s", id)
 	}
 	res := t.files[id]
-	t.mu.RUnlock()
 	return res, nil
 }
