@@ -54,6 +54,6 @@ func (t *HealthMonitor) ping(server *metadata.ChunkServer) {
 }
 
 func (t *HealthMonitor) Stop() {
-	log.Info("sutting down monitor server")
+	defer log.Info("sutting down monitor server")
 	t.quitChan <- struct{}{}
 }

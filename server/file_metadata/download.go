@@ -15,10 +15,10 @@ func (t Server) DownloadFile(ctx context.Context, req *fms.FileDownloadReq) (*fm
 	fileHandler := metadata.GetFileController()
 	file, err := fileHandler.Get(req.FileId)
 	if err != nil {
-		return nil, fmt.Errorf("failed to delete error, %v", err)
+		return nil, fmt.Errorf("failed to delete file, %v", err)
 	}
 
-	token, _ := acl.NewJWT().Generate(&acl.Claims{UserId: file.GetUserID(), Access: *file.GetACL(), Size: file.Size})
+	token, _ := acl.NewJWT().Generate(&acl.Claims{UserId: file.GetOwnerID(), FileId: file.GetID(), Access: *file.GetACL(), Size: file.Size})
 	chunk_servers := getChunkServers(file)
 
 	log.Infof("File download has been initiated successfully for fileId: %s", req.GetFileId())
