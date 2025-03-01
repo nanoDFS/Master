@@ -9,6 +9,7 @@ import (
 	"github.com/nanoDFS/Master/server"
 	fileserver "github.com/nanoDFS/Master/server/proto"
 	"github.com/nanoDFS/Master/utils"
+	"github.com/nanoDFS/p2p/p2p/transport"
 	"google.golang.org/grpc"
 )
 
@@ -22,6 +23,11 @@ func createSingleMaster(port string) {
 func main() {
 	utils.InitLog()
 
+	port := ":8080"
+	server, _ := transport.NewTCPTransport(port)
+	if err := server.Listen(); err != nil {
+		log.Errorf("failed to listen, %s, %v", port, err)
+	}
 	createSingleMaster(":9000")
 	createSingleMaster(":8000")
 	createSingleMaster(":8004")

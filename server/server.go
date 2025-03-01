@@ -40,7 +40,7 @@ func (t *MasterServer) Listen() error {
 	go func() {
 		log.Infof("started listening on port: %s", t.Addr)
 		if err := t.server.Serve(*t.listener); err != nil {
-			log.Errorf("failed to listen on port %s", t.Addr)
+			log.Fatalf("failed to listen on port %s", t.Addr)
 		}
 	}()
 	return nil
