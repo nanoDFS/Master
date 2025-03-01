@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/charmbracelet/log"
-	cms "github.com/nanoDFS/Master/server/chunk_server_metadata"
-	cms_pb "github.com/nanoDFS/Master/server/chunk_server_metadata/proto"
+	cms "github.com/nanoDFS/Master/server/chunkserver"
+	cms_pb "github.com/nanoDFS/Master/server/chunkserver/proto"
 	"github.com/nanoDFS/Master/utils"
 	"google.golang.org/grpc"
 )

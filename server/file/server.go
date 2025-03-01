@@ -5,7 +5,7 @@ import (
 
 	"github.com/charmbracelet/log"
 	"github.com/nanoDFS/Master/controller/metadata"
-	fms "github.com/nanoDFS/Master/server/file_metadata/proto"
+	fms "github.com/nanoDFS/Master/server/file/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )

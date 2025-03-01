@@ -8,8 +8,8 @@ import (
 
 	"github.com/nanoDFS/Master/health"
 	server "github.com/nanoDFS/Master/server"
-	cms_pb "github.com/nanoDFS/Master/server/chunk_server_metadata/proto"
-	fms_pb "github.com/nanoDFS/Master/server/file_metadata/proto"
+	cms_pb "github.com/nanoDFS/Master/server/chunkserver/proto"
+	fms_pb "github.com/nanoDFS/Master/server/file/proto"
 	"github.com/nanoDFS/Master/utils"
 	"google.golang.org/grpc"
 )

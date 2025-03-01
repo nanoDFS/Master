@@ -5,10 +5,10 @@ import (
 	"testing"
 
 	"github.com/charmbracelet/log"
-	cms "github.com/nanoDFS/Master/server/chunk_server_metadata"
-	cms_pb "github.com/nanoDFS/Master/server/chunk_server_metadata/proto"
-	fms "github.com/nanoDFS/Master/server/file_metadata"
-	fms_pb "github.com/nanoDFS/Master/server/file_metadata/proto"
+	cms "github.com/nanoDFS/Master/server/chunkserver"
+	cms_pb "github.com/nanoDFS/Master/server/chunkserver/proto"
+	fms "github.com/nanoDFS/Master/server/file"
+	fms_pb "github.com/nanoDFS/Master/server/file/proto"
 	"github.com/nanoDFS/Master/utils"
 	"google.golang.org/grpc"
 )

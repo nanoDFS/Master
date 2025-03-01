@@ -8,7 +8,7 @@ import (
 
 	"github.com/nanoDFS/Master/controller/acl"
 	"github.com/nanoDFS/Master/controller/metadata"
-	fms "github.com/nanoDFS/Master/server/file_metadata/proto"
+	fms "github.com/nanoDFS/Master/server/file/proto"
 )
 
 func (t Server) DeleteFile(ctx context.Context, req *fms.FileDeleteReq) (*fms.DeleteResp, error) {

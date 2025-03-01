@@ -1,8 +1,8 @@
 package server
 
 import (
-	cms "github.com/nanoDFS/Master/server/chunk_server_metadata"
-	fms "github.com/nanoDFS/Master/server/file_metadata"
+	cms "github.com/nanoDFS/Master/server/chunkserver"
+	fms "github.com/nanoDFS/Master/server/file"
 )
 
 type MasterServer struct {
