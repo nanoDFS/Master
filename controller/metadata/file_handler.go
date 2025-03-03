@@ -1,10 +1,6 @@
 package metadata
 
 import (
-	"sync"
-
-	"fmt"
-
 	"github.com/nanoDFS/Master/controller/acl"
 	cs "github.com/nanoDFS/Master/controller/metadata/chunkserver"
 	lb "github.com/nanoDFS/Master/controller/metadata/chunkserver/loadbalancer"
@@ -57,11 +53,10 @@ func (t *File) GetChunkServers() []string {
 
 // FileController is a singleton class, provides API for file system metadata
 type FileController struct {
-	mu    sync.RWMutex
-	files map[string]*File
+	files *dm.ConcurrentMap[string, *File]
 }
 
-var fileController = &FileController{files: make(map[string]*File), mu: sync.RWMutex{}}
+var fileController = &FileController{files: dm.NewConcurrentMap[string, *File]()}
 
 func GetFileController() *FileController {
 	return fileController
@@ -69,29 +64,14 @@ func GetFileController() *FileController {
 
 func (t *FileController) Create(id string, userId string, acl *acl.ACL, size int64) *File {
 	file := newFile(id, userId, acl, size)
-	t.mu.Lock()
-	t.files[id] = file
-	t.mu.Unlock()
+	t.files.Set(id, file)
 	return file
 }
 
 func (t *FileController) Delete(id string) (*File, error) {
-	t.mu.Lock()
-	defer t.mu.Unlock()
-	if _, ok := t.files[id]; !ok {
-		return nil, fmt.Errorf("failed to fetch file with fileId: %s", id)
-	}
-	file := t.files[id]
-	delete(t.files, id)
-	return file, nil
+	return t.files.Delete(id)
 }
 
 func (t *FileController) Get(id string) (*File, error) {
-	t.mu.RLock()
-	defer t.mu.RUnlock()
-	if _, ok := t.files[id]; !ok {
-		return nil, fmt.Errorf("failed to fetch file with fileId: %s", id)
-	}
-	res := t.files[id]
-	return res, nil
+	return t.files.Get(id)
 }
