@@ -6,13 +6,13 @@ import (
 )
 
 type MasterServer struct {
-	CMS *cms.MasterServer
-	FMS *fms.MasterServer
+	CMS *cms.CSMetadataServer
+	FMS *fms.FileMetadataServer
 }
 
 func NewMasterServerRunner(faddr string, caddr string) (*MasterServer, error) {
-	cms, _ := cms.NewMasterServerRunner(caddr)
-	fms, _ := fms.NewMasterServerRunner(faddr)
+	cms, _ := cms.NewCSMetadataServerRunner(caddr)
+	fms, _ := fms.NewFileMetadataServerRunner(faddr)
 
 	return &MasterServer{
 		CMS: cms,
