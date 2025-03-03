@@ -18,7 +18,7 @@ func (t Server) DownloadFile(ctx context.Context, req *fms.FileDownloadReq) (*fm
 		return nil, fmt.Errorf("failed to delete file, %v", err)
 	}
 
-	token, _ := acl.NewJWT().Generate(&acl.Claims{UserId: file.GetOwnerID(), FileId: file.GetID(), Access: *file.GetACL(), Size: file.Size})
+	token, _ := acl.NewJWT().Generate(&acl.Claims{UserId: file.GetOwnerID(), FileId: file.GetID(), Access: *file.GetACL(), Size: file.Size.Get()})
 	chunk_servers := getChunkServers(file)
 
 	log.Infof("File download has been initiated successfully for fileId: %s", req.GetFileId())

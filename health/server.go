@@ -4,19 +4,19 @@ import (
 	"time"
 
 	"github.com/charmbracelet/log"
-	"github.com/nanoDFS/Master/controller/metadata"
+	cs "github.com/nanoDFS/Master/controller/metadata/chunkserver"
 	"github.com/nanoDFS/p2p/p2p/transport"
 )
 
 type HealthMonitor struct {
 	server              *transport.TCPTransport
-	chunkServerMetadata *metadata.ChunkServerMetadata
+	chunkServerMetadata *cs.ChunkServerMetadata
 	quitChan            chan struct{}
 }
 
 func NewHealthMonitor(addr string) (*HealthMonitor, error) {
 	server, err := transport.NewTCPTransport(addr)
-	chunkServerMetadata := metadata.GetChunkServerMetadata()
+	chunkServerMetadata := cs.GetChunkServerMetadata()
 	return &HealthMonitor{
 		server:              server,
 		chunkServerMetadata: chunkServerMetadata,
@@ -36,7 +36,7 @@ func (t *HealthMonitor) listen() {
 		default:
 			log.Info("PING: started")
 			for _, s := range t.chunkServerMetadata.GetAllChunkServers() {
-				go func(s *metadata.ChunkServer) {
+				go func(s *cs.ChunkServer) {
 					t.ping(s)
 				}(s)
 			}
@@ -45,9 +45,9 @@ func (t *HealthMonitor) listen() {
 	}
 }
 
-func (t *HealthMonitor) ping(server *metadata.ChunkServer) {
+func (t *HealthMonitor) ping(server *cs.ChunkServer) {
 	if err := t.server.Send(server.Addr.String(), "health/heartbeat"); err != nil {
-		server.SetStatus(metadata.Inactive)
+		server.SetStatus(cs.Inactive)
 		log.Warnf("PING: found inactive server: %s", server.Addr)
 	}
 	t.server.Close(server.Addr.String())

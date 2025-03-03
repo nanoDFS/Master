@@ -51,9 +51,9 @@ func (t *MasterServer) Stop() {
 
 func getChunkServers(file *metadata.File) []*fms.ChunkServer {
 	var chunk_servers []*fms.ChunkServer
-	for _, server := range file.Chunks {
+	for _, addr := range file.GetChunkServers() {
 		chunk_servers = append(chunk_servers, &fms.ChunkServer{
-			Address: server[0].Addr.String(),
+			Address: addr,
 		})
 	}
 	return chunk_servers

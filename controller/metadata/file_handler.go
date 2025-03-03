@@ -6,72 +6,53 @@ import (
 	"fmt"
 
 	"github.com/nanoDFS/Master/controller/acl"
-	loadbalancing "github.com/nanoDFS/Master/controller/metadata/load_balancing"
-	"github.com/nanoDFS/Master/utils/config"
+	cs "github.com/nanoDFS/Master/controller/metadata/chunkserver"
+	lb "github.com/nanoDFS/Master/controller/metadata/chunkserver/loadbalancer"
+	repl "github.com/nanoDFS/Master/controller/metadata/chunkserver/replicator"
+	dm "github.com/nanoDFS/Master/utils/datamodel"
 )
 
 type File struct {
 	id      string
 	ownerId string
 	acl     *acl.ACL
-	Size    int64
-	Chunks  [][]*ChunkServer
-
-	mu sync.RWMutex
+	Size    *dm.ConcurrentValue[int64]
+	chunks  *dm.ConcurrentList[*repl.Replicas]
 }
 
 func newFile(id string, userId string, acl *acl.ACL, size int64) *File {
 
-	var chunks [][]*ChunkServer
-	for _, k := range generateChunks(id, size) {
-		chunks = append(chunks, []*ChunkServer{k})
+	var chunks *dm.ConcurrentList[*repl.Replicas] = dm.NewConcurrentList[*repl.Replicas]()
+	chunker := cs.NewChunker(lb.ConsistentHashing{})
+	for _, k := range chunker.Generate(id, size) {
+		chunks.Append(repl.NewReplicas(k, nil, nil))
 	}
 	return &File{
 		id:      id,
 		ownerId: userId,
 		acl:     acl,
-		Size:    size,
-		Chunks:  chunks,
-		mu:      sync.RWMutex{},
+		Size:    dm.NewConcurrentValue(size),
+		chunks:  chunks,
 	}
 }
 
 func (t *File) GetACL() *acl.ACL {
-	t.mu.RLock()
-	acl_ := t.acl
-	t.mu.RUnlock()
-	return acl_
+	return t.acl
 }
 func (t *File) GetOwnerID() string {
-	t.mu.RLock()
-	id := t.ownerId
-	t.mu.RUnlock()
-	return id
+	return t.ownerId
 }
 func (t *File) GetID() string {
-	t.mu.RLock()
-	id := t.id
-	t.mu.RUnlock()
-	return id
+	return t.id
 }
 
-func generateChunks(fileId string, size int64) []*ChunkServer {
-	chunkSize := config.LoadConfig().Chunk.Size
-
-	count := size / chunkSize
-	if size%chunkSize != 0 {
-		count++
+func (t *File) GetChunkServers() []string {
+	var chunk_servers []string
+	for i := range t.chunks.Size() {
+		res, _ := t.chunks.Get(i)
+		chunk_servers = append(chunk_servers, res.Primary.Get().Addr.String())
 	}
-
-	var servers []*ChunkServer
-
-	allChunkServers := GetChunkServerMetadata().GetAllChunkServers()
-	loadbalancer := loadbalancing.NewConsistentHashing()
-	for i := range count {
-		index := loadbalancer.GetIndex(fileId+fmt.Sprint(i), len(allChunkServers))
-		servers = append(servers, allChunkServers[index])
-	}
-	return servers
+	return chunk_servers
 }
 
 // FileController is a singleton class, provides API for file system metadata
