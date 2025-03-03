@@ -32,7 +32,7 @@ func (t *ChunkServer) GetStatus() Status {
 }
 
 func (t *ChunkServer) SetStatus(status Status) {
-	t.status.Set(status)
+	t.status.Set(status) // TODO: Should I keep ChunkServer when it becomes inactive
 }
 func (t *ChunkServer) GetSpace() int64 {
 	return t.space.Get()

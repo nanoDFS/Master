@@ -6,7 +6,7 @@ import (
 
 	"github.com/charmbracelet/log"
 
-	"github.com/nanoDFS/Master/health"
+	"github.com/nanoDFS/Master/monitor"
 	server "github.com/nanoDFS/Master/server"
 	cms_pb "github.com/nanoDFS/Master/server/chunkserver/proto"
 	fms_pb "github.com/nanoDFS/Master/server/file/proto"
@@ -37,8 +37,8 @@ func main() {
 	go test(":8003", 2)
 
 	port := utils.RandLocalAddr()
-	monitor, err := health.NewHealthMonitor(port)
-	monitor.Listen()
+	m, err := monitor.NewMonitor(port)
+	m.Start()
 	if err != nil {
 		log.Errorf("failed to create monitor , %v", err)
 	}
