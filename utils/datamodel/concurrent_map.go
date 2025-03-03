@@ -33,14 +33,16 @@ func (t *ConcurrentMap[K, V]) Set(key K, value V) {
 	t.kv[key] = value
 }
 
-func (t *ConcurrentMap[K, V]) Delete(key K) error {
+func (t *ConcurrentMap[K, V]) Delete(key K) (V, error) {
 	t.mu.Lock()
 	defer t.mu.Unlock()
 	if _, ok := t.kv[key]; !ok {
-		return fmt.Errorf("key not found")
+		var null V
+		return null, fmt.Errorf("key not found")
 	}
+	cop := t.kv[key]
 	delete(t.kv, key)
-	return nil
+	return cop, nil
 }
 
 func (t *ConcurrentMap[K, V]) Values() []V {
