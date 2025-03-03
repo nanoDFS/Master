@@ -63,10 +63,10 @@ func TestUploadAndDelete(t *testing.T) {
 		t.Errorf("failed to upload file, %v", err)
 	}
 
-	_, err = client.DownloadFile(context.Background(), &fms_pb.FileDownloadReq{
+	dRes, err := client.DownloadFile(context.Background(), &fms_pb.FileDownloadReq{
 		FileId: "some-user-generated-file-id",
 	})
-	if err != nil {
+	if err != nil || len(dRes.ChunkServers) == 0 {
 		t.Errorf("failed to delete file, %v", err)
 	}
 	_, err = client.DeleteFile(context.Background(), &fms_pb.FileDeleteReq{

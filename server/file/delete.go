@@ -18,7 +18,7 @@ func (t Server) DeleteFile(ctx context.Context, req *fms.FileDeleteReq) (*fms.De
 		return nil, fmt.Errorf("failed to delete error, %v", err)
 	}
 
-	token, _ := acl.NewJWT().Generate(&acl.Claims{UserId: file.GetOwnerID(), FileId: file.GetID(), Access: *file.GetACL(), Size: file.Size})
+	token, _ := acl.NewJWT().Generate(&acl.Claims{UserId: file.GetOwnerID(), FileId: file.GetID(), Access: *file.GetACL(), Size: file.Size.Get()})
 
 	chunk_servers := getChunkServers(file)
 
