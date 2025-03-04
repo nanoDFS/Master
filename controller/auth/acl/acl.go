@@ -1,5 +1,12 @@
 package acl
 
+type Mode int
+
+const (
+	Read  Mode = iota // 0
+	Write             // 1
+)
+
 type ACL struct {
 	user_id string
 	read    bool

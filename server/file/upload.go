@@ -5,6 +5,7 @@ import (
 
 	"github.com/charmbracelet/log"
 
+	"github.com/nanoDFS/Master/controller/auth"
 	"github.com/nanoDFS/Master/controller/auth/acl"
 	"github.com/nanoDFS/Master/controller/metadata"
 	fms "github.com/nanoDFS/Master/server/file/proto"
@@ -16,8 +17,7 @@ func (t Server) UploadFile(ctx context.Context, req *fms.FileUploadReq) (*fms.Up
 	log.Debugf("Waiting : %s", req.FileId)
 	file := fileHandler.Create(req.FileId, req.UserId, access, req.Size)
 
-	token, _ := acl.NewJWT().Generate(&acl.Claims{UserId: req.UserId, FileId: req.FileId, Access: *file.GetACL(), Size: req.Size})
-
+	token, _ := auth.NewAuth().AuthorizeRead(req.UserId, *file, *file.GetACL(), file.Size.Get())
 	chunk_servers := getChunkServers(file)
 
 	log.Infof("File upload has been initiated successfully for fileId: %s, userId: %s", req.GetFileId(), req.GetUserId())
