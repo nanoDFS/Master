@@ -15,7 +15,7 @@ import (
 
 func registerCS() *cms_pb.ChunkServerRegisterServiceClient {
 	port := utils.RandLocalAddr()
-	master, _ := cms.NewMasterServerRunner(port)
+	master, _ := cms.NewCSMetadataServerRunner(port)
 	master.Listen()
 	conn, err := grpc.NewClient(port, grpc.WithInsecure())
 	if err != nil {
@@ -32,7 +32,7 @@ func registerCS() *cms_pb.ChunkServerRegisterServiceClient {
 
 func TestNewMasterServerRunner(t *testing.T) {
 	port := utils.RandLocalAddr()
-	master, err := fms.NewMasterServerRunner(port)
+	master, err := fms.NewFileMetadataServerRunner(port)
 	if err != nil {
 		t.Errorf("failed to start server: %v", err)
 	}
@@ -41,7 +41,7 @@ func TestNewMasterServerRunner(t *testing.T) {
 
 func TestUploadAndDelete(t *testing.T) {
 	port := utils.RandLocalAddr()
-	master, _ := fms.NewMasterServerRunner(port)
+	master, _ := fms.NewFileMetadataServerRunner(port)
 	master.Listen()
 
 	registerCS()

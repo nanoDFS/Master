@@ -13,13 +13,13 @@ type Server struct {
 	css.UnimplementedChunkServerRegisterServiceServer
 }
 
-type MasterServer struct {
+type CSMetadataServer struct {
 	Addr     net.Addr
 	listener *net.Listener
 	server   *grpc.Server
 }
 
-func NewMasterServerRunner(addr string) (*MasterServer, error) {
+func NewCSMetadataServerRunner(addr string) (*CSMetadataServer, error) {
 	listener, err := net.Listen("tcp", addr)
 	if err != nil {
 		return nil, err
@@ -27,14 +27,14 @@ func NewMasterServerRunner(addr string) (*MasterServer, error) {
 	s := grpc.NewServer()
 	css.RegisterChunkServerRegisterServiceServer(s, Server{})
 	reflection.Register(s)
-	return &MasterServer{
+	return &CSMetadataServer{
 		Addr:     listener.Addr(),
 		listener: &listener,
 		server:   s,
 	}, nil
 }
 
-func (t *MasterServer) Listen() error {
+func (t *CSMetadataServer) Listen() error {
 	go func() {
 		log.Infof("started chunk server metadata service, listening on port: %s", t.Addr)
 		if err := t.server.Serve(*t.listener); err != nil {
@@ -44,6 +44,6 @@ func (t *MasterServer) Listen() error {
 	return nil
 }
 
-func (t *MasterServer) Stop() {
+func (t *CSMetadataServer) Stop() {
 	t.server.Stop()
 }

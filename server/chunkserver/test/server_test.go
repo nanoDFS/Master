@@ -13,7 +13,7 @@ import (
 
 func TestNewMasterServerRunner(t *testing.T) {
 	port := utils.RandLocalAddr()
-	master, err := cms.NewMasterServerRunner(port)
+	master, err := cms.NewCSMetadataServerRunner(port)
 	if err != nil {
 		t.Errorf("failed to start server: %v", err)
 	}
@@ -22,7 +22,7 @@ func TestNewMasterServerRunner(t *testing.T) {
 
 func TestRegister(t *testing.T) {
 	port := utils.RandLocalAddr()
-	master, _ := cms.NewMasterServerRunner(port)
+	master, _ := cms.NewCSMetadataServerRunner(port)
 	master.Listen()
 
 	conn, err := grpc.NewClient(port, grpc.WithInsecure())

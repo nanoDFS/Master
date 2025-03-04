@@ -14,13 +14,13 @@ type Server struct {
 	fms.UnimplementedFileMetadataServiceServer
 }
 
-type MasterServer struct {
+type FileMetadataServer struct {
 	Addr     net.Addr
 	listener *net.Listener
 	server   *grpc.Server
 }
 
-func NewMasterServerRunner(addr string) (*MasterServer, error) {
+func NewFileMetadataServerRunner(addr string) (*FileMetadataServer, error) {
 	listener, err := net.Listen("tcp", addr)
 	if err != nil {
 		return nil, err
@@ -28,14 +28,14 @@ func NewMasterServerRunner(addr string) (*MasterServer, error) {
 	s := grpc.NewServer()
 	fms.RegisterFileMetadataServiceServer(s, Server{})
 	reflection.Register(s)
-	return &MasterServer{
+	return &FileMetadataServer{
 		Addr:     listener.Addr(),
 		listener: &listener,
 		server:   s,
 	}, nil
 }
 
-func (t *MasterServer) Listen() error {
+func (t *FileMetadataServer) Listen() error {
 	go func() {
 		log.Infof("started file metadata service, listening on port: %s", t.Addr)
 		if err := t.server.Serve(*t.listener); err != nil {
@@ -45,7 +45,7 @@ func (t *MasterServer) Listen() error {
 	return nil
 }
 
-func (t *MasterServer) Stop() {
+func (t *FileMetadataServer) Stop() {
 	t.server.Stop()
 }
 
