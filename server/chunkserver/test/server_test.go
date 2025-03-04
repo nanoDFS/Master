@@ -35,7 +35,7 @@ func TestRegister(t *testing.T) {
 	resp, _ := client.Register(context.Background(), &cms_pb.ChunkServerRegisterReq{
 		Address: utils.RandLocalAddr(),
 	})
-	expected := cms_pb.RegisterResp{Status: true}
+	expected := cms_pb.RegisterResp{Success: true}
 	if resp.String() != expected.String() {
 		t.Errorf("expected %s , got %s", expected.String(), resp.String())
 	}

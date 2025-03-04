@@ -14,6 +14,6 @@ func (t Server) Register(ctx context.Context, req *css.ChunkServerRegisterReq) (
 	metadata_ctl.Register(req.Address, req.Space)
 	log.Infof("Registered %s as a chunk server", req.Address)
 	return &css.RegisterResp{
-		Status: true,
+		Success: true,
 	}, nil
 }

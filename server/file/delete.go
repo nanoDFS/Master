@@ -18,18 +18,18 @@ func (t Server) DeleteFile(ctx context.Context, req *fms.FileDeleteReq) (*fms.De
 		return nil, fmt.Errorf("failed to delete error, %v", err)
 	}
 
-	token, err := auth.NewAuth().AuthorizeDelete(file.GetOwnerID(), file.GetID(), *file.GetACL(), file.Size.Get())
+	token, err := auth.NewAuth().AuthorizeDelete(req.UserId, *file, *file.GetACL(), file.Size.Get())
 	if err != nil {
 		return &fms.DeleteResp{
-			ChunkServers: nil,
-			AccessToken:  nil,
-		}, nil
+			Success: false,
+		}, err
 	}
 	chunk_servers := getChunkServers(file)
 
 	log.Infof("File delete has been initiated successfully for fileId: %s", req.GetFileId())
 	log.Debugf("Selected chunk servers: %s", chunk_servers)
 	return &fms.DeleteResp{
+		Success:      true,
 		ChunkServers: chunk_servers,
 		AccessToken:  token,
 	}, nil

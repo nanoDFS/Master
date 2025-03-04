@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/nanoDFS/Master/controller/auth/acl"
+	md "github.com/nanoDFS/Master/controller/metadata"
 )
 
 type Auth struct {
@@ -18,16 +19,16 @@ func (t Auth) authorize(userId string, fileId string, access acl.ACL, size int64
 	return token
 }
 
-func (t Auth) AuthorizeRead(userId string, fileId string, access acl.ACL, size int64) ([]byte, error) {
-	if !access.CanRead() {
+func (t Auth) AuthorizeRead(userId string, file md.File, access acl.ACL, size int64) ([]byte, error) {
+	if !access.CanRead() || file.GetOwnerID() != userId {
 		return nil, fmt.Errorf("do not have access to read")
 	}
-	return t.authorize(userId, fileId, access, size), nil
+	return t.authorize(userId, file.GetID(), access, size), nil
 }
 
-func (t Auth) AuthorizeDelete(userId string, fileId string, access acl.ACL, size int64) ([]byte, error) {
-	if !access.CanDelete() {
+func (t Auth) AuthorizeDelete(userId string, file md.File, access acl.ACL, size int64) ([]byte, error) {
+	if !access.CanDelete() || file.GetOwnerID() != userId {
 		return nil, fmt.Errorf("do not have access to read")
 	}
-	return t.authorize(userId, fileId, access, size), nil
+	return t.authorize(userId, file.GetID(), access, size), nil
 }
