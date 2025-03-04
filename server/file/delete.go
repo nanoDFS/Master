@@ -6,7 +6,7 @@ import (
 
 	"github.com/charmbracelet/log"
 
-	"github.com/nanoDFS/Master/controller/acl"
+	"github.com/nanoDFS/Master/controller/auth"
 	"github.com/nanoDFS/Master/controller/metadata"
 	fms "github.com/nanoDFS/Master/server/file/proto"
 )
@@ -18,8 +18,13 @@ func (t Server) DeleteFile(ctx context.Context, req *fms.FileDeleteReq) (*fms.De
 		return nil, fmt.Errorf("failed to delete error, %v", err)
 	}
 
-	token, _ := acl.NewJWT().Generate(&acl.Claims{UserId: file.GetOwnerID(), FileId: file.GetID(), Access: *file.GetACL(), Size: file.Size.Get()})
-
+	token, err := auth.NewAuth().AuthorizeDelete(file.GetOwnerID(), file.GetID(), *file.GetACL(), file.Size.Get())
+	if err != nil {
+		return &fms.DeleteResp{
+			ChunkServers: nil,
+			AccessToken:  nil,
+		}, nil
+	}
 	chunk_servers := getChunkServers(file)
 
 	log.Infof("File delete has been initiated successfully for fileId: %s", req.GetFileId())

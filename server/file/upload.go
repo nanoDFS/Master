@@ -5,7 +5,7 @@ import (
 
 	"github.com/charmbracelet/log"
 
-	"github.com/nanoDFS/Master/controller/acl"
+	"github.com/nanoDFS/Master/controller/auth/acl"
 	"github.com/nanoDFS/Master/controller/metadata"
 	fms "github.com/nanoDFS/Master/server/file/proto"
 )

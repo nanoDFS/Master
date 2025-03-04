@@ -1,7 +1,7 @@
 package metadata
 
 import (
-	"github.com/nanoDFS/Master/controller/acl"
+	"github.com/nanoDFS/Master/controller/auth/acl"
 	cs "github.com/nanoDFS/Master/controller/metadata/chunkserver"
 	lb "github.com/nanoDFS/Master/controller/metadata/chunkserver/loadbalancer"
 	repl "github.com/nanoDFS/Master/controller/metadata/chunkserver/replicator"

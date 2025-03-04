@@ -1,3 +1,9 @@
 # support chunk range for update & delete
 # what to do with inactive severs ?
 
+# First layer of authentication in Master
+
+
+# NOTES:
+    disk based io.Reader/Writer need to be closed explicitly 
+    bytes.Buffer , in-memory 
