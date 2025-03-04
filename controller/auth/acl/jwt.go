@@ -10,7 +10,7 @@ import (
 type Claims struct {
 	UserId string
 	FileId string
-	Access ACL
+	Mode   Mode
 	Size   int64
 	jwt.RegisteredClaims
 }
