@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package chunkserver;
 
-option go_package = "./server/chunk_server_metadata/proto;chunkserver"; 
+option go_package = "./server/chunkserver/proto;chunkserver"; 
 
 service ChunkServerRegisterService {
   rpc Register(ChunkServerRegisterReq) returns (RegisterResp);
@@ -18,5 +18,5 @@ message ChunkServerRegisterReq {
 }
 
 message RegisterResp {
-    bool status = 1;
+    bool success = 1;
 }

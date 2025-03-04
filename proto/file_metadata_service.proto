@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package filemetadata;
 
-option go_package = "./server/file_metadata/proto;filemetadata"; 
+option go_package = "./server/file/proto;filemetadata"; 
 
 service FileMetadataService {
   rpc UploadFile(FileUploadReq) returns (UploadResp);
@@ -30,18 +30,22 @@ message UploadResp {
 
 message FileDownloadReq {
     string file_id = 1;
+    string user_id = 2;
 }
 
 message DownloadResp {
-    repeated ChunkServer chunk_servers = 1; 
-    bytes access_token = 2;
+    bool success = 1;
+    repeated ChunkServer chunk_servers = 2; 
+    bytes access_token = 3;
 }
 
 message FileDeleteReq {
     string file_id = 1;
+    string user_id = 2;
 }
 
 message DeleteResp {
-    repeated ChunkServer chunk_servers = 1; 
-    bytes access_token = 2;
+  bool success = 1;
+    repeated ChunkServer chunk_servers = 2; 
+    bytes access_token = 3;
 }

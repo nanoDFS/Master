@@ -18,12 +18,11 @@ func (t Server) DownloadFile(ctx context.Context, req *fms.FileDownloadReq) (*fm
 		return nil, fmt.Errorf("failed to delete file, %v", err)
 	}
 
-	token, err := auth.NewAuth().AuthorizeRead(file.GetOwnerID(), file.GetID(), *file.GetACL(), file.Size.Get())
+	token, err := auth.NewAuth().AuthorizeRead(req.UserId, *file, *file.GetACL(), file.Size.Get()) // TODO: sending *file might cause concurrency issue
 	if err != nil {
 		return &fms.DownloadResp{
-			ChunkServers: nil,
-			AccessToken:  nil,
-		}, nil
+			Success: false,
+		}, err
 	}
 
 	chunk_servers := getChunkServers(file)
@@ -31,6 +30,7 @@ func (t Server) DownloadFile(ctx context.Context, req *fms.FileDownloadReq) (*fm
 	log.Infof("File download has been initiated successfully for fileId: %s", req.GetFileId())
 	log.Debugf("Selected chunk servers: %s", chunk_servers)
 	return &fms.DownloadResp{
+		Success:      true,
 		ChunkServers: chunk_servers,
 		AccessToken:  token,
 	}, nil
