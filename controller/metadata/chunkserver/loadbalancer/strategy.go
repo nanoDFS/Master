@@ -5,5 +5,5 @@ type Opts struct {
 	Length int
 }
 type LoadBalancingStrategy interface {
-	GetIndex(opts Opts) int
+	GetIndex(opts Opts) (int, error)
 }

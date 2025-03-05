@@ -29,7 +29,10 @@ func (t *Chunker) Generate(fileId string, size int64) []*ChunkServer {
 
 	allChunkServers := GetChunkServerMetadata().GetAllChunkServers()
 	for i := range count {
-		index := t.startegy.GetIndex(lb.Opts{Key: fileId + fmt.Sprint(i), Length: len(allChunkServers)})
+		index, err := t.startegy.GetIndex(lb.Opts{Key: fileId + fmt.Sprint(i), Length: len(allChunkServers)})
+		if err != nil {
+			return servers
+		}
 		servers = append(servers, allChunkServers[index])
 	}
 
