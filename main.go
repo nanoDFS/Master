@@ -28,9 +28,9 @@ func main() {
 	createSingleMaster(":8001", ":8002")
 	createSingleMaster(":8003", ":8004")
 
-	addCS(":9001")
-	addCS(":9002")
-	addCS(":8004")
+	//addCS(":9002")
+	// addCS(":9001")
+	// addCS(":8004")
 
 	go test(":9000", 0)
 	go test(":8001", 1)
