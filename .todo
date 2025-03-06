@@ -1,8 +1,9 @@
 # support chunk range for update & delete
 # what to do with inactive severs ?
 
-# First layer of authentication in Master
+# First layer of authentication in Master - Done
 
+# Slave publishes its TCP address , but Master also need gRPC address to send it to client
 
 # NOTES:
     disk based io.Reader/Writer need to be closed explicitly 

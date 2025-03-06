@@ -11,8 +11,8 @@ type MasterServer struct {
 }
 
 func NewMasterServerRunner(faddr string, caddr string) (*MasterServer, error) {
-	cms, _ := cms.NewCSMetadataServerRunner(caddr)
 	fms, _ := fms.NewFileMetadataServerRunner(faddr)
+	cms, _ := cms.NewCSMetadataServerRunner(caddr)
 
 	return &MasterServer{
 		CMS: cms,

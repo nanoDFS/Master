@@ -14,16 +14,18 @@ const (
 )
 
 type ChunkServer struct {
-	Addr   net.Addr
-	status *dm.ConcurrentValue[Status]
-	space  *dm.ConcurrentValue[int64] // in bytes
+	MonitorAddr   net.Addr
+	StreamingAddr net.Addr
+	status        *dm.ConcurrentValue[Status]
+	space         *dm.ConcurrentValue[int64] // in bytes
 }
 
-func NewChunkServer(addr net.Addr, space int64) *ChunkServer {
+func NewChunkServer(monitorAddr net.Addr, streamingAddr net.Addr, space int64) *ChunkServer {
 	return &ChunkServer{
-		Addr:   addr,
-		status: dm.NewConcurrentValue(Active),
-		space:  dm.NewConcurrentValue(space),
+		MonitorAddr:   monitorAddr,
+		StreamingAddr: streamingAddr,
+		status:        dm.NewConcurrentValue(Active),
+		space:         dm.NewConcurrentValue(space),
 	}
 }
 
@@ -52,9 +54,10 @@ func GetChunkServerMetadata() *ChunkServerMetadata {
 	return chunkServerMetadataInstance
 }
 
-func (t *ChunkServerMetadata) Register(addr string, space int64) {
-	tcp_addr, _ := net.ResolveTCPAddr("tcp", addr)
-	t.chunkServers.Set(addr, NewChunkServer(tcp_addr, space))
+func (t *ChunkServerMetadata) Register(monitorAddr string, streamingAddr string, space int64) {
+	tcp_addr, _ := net.ResolveTCPAddr("tcp", monitorAddr)
+	grpc_addr, _ := net.ResolveTCPAddr("tcp", streamingAddr)
+	t.chunkServers.Set(monitorAddr, NewChunkServer(tcp_addr, grpc_addr, space))
 }
 
 func (t *ChunkServerMetadata) Drop(addr string) {

@@ -46,7 +46,7 @@ func (t *File) GetChunkServers() []string {
 	var chunk_servers []string
 	for i := range t.chunks.Size() {
 		res, _ := t.chunks.Get(i)
-		chunk_servers = append(chunk_servers, res.Primary.Get().Addr.String())
+		chunk_servers = append(chunk_servers, res.Primary.Get().StreamingAddr.String())
 	}
 	return chunk_servers
 }

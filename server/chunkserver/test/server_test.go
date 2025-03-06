@@ -33,7 +33,8 @@ func TestRegister(t *testing.T) {
 
 	client := cms_pb.NewChunkServerRegisterServiceClient(conn)
 	resp, _ := client.Register(context.Background(), &cms_pb.ChunkServerRegisterReq{
-		Address: utils.RandLocalAddr(),
+		MonitorAddress:   utils.RandLocalAddr(),
+		StreamingAddress: utils.RandLocalAddr(),
 	})
 	expected := cms_pb.RegisterResp{Success: true}
 	if resp.String() != expected.String() {

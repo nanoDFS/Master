@@ -25,7 +25,8 @@ func registerCS() *cms_pb.ChunkServerRegisterServiceClient {
 
 	client := cms_pb.NewChunkServerRegisterServiceClient(conn)
 	client.Register(context.Background(), &cms_pb.ChunkServerRegisterReq{
-		Address: utils.RandLocalAddr(),
+		MonitorAddress:   utils.RandLocalAddr(),
+		StreamingAddress: utils.RandLocalAddr(),
 	})
 	return &client
 }
