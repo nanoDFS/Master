@@ -28,7 +28,7 @@ func main() {
 	createSingleMaster(":8001", ":8002")
 	createSingleMaster(":8003", ":8004")
 
-	//addCS(":9002")
+	// addCS(":9002")
 	// addCS(":9001")
 	// addCS(":8004")
 
@@ -56,7 +56,8 @@ func addCS(caddr string) {
 	func() {
 		for range 3 {
 			client.Register(context.Background(), &cms_pb.ChunkServerRegisterReq{
-				Address: utils.RandLocalAddr(),
+				MonitorAddress:   utils.RandLocalAddr(),
+				StreamingAddress: utils.RandLocalAddr(),
 			})
 		}
 	}()

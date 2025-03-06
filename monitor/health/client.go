@@ -46,11 +46,11 @@ func (t *HealthClient) start() {
 }
 
 func (t *HealthClient) ping(server *cs.ChunkServer) {
-	if err := t.client.Send(server.Addr.String(), "health/heartbeat"); err != nil {
+	if err := t.client.Send(server.MonitorAddr.String(), "health/heartbeat"); err != nil {
 		server.SetStatus(cs.Inactive)
-		log.Warnf("PING: found inactive server: %s", server.Addr)
+		log.Warnf("PING: found inactive server: %s", server.MonitorAddr)
 	}
-	t.client.Close(server.Addr.String())
+	t.client.Close(server.MonitorAddr.String())
 }
 
 func (t *HealthClient) Stop() {
