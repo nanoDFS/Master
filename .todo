@@ -5,6 +5,8 @@
 
 # Slave publishes its TCP address , but Master also need gRPC address to send it to client
 
+# Unusual chunk sizes in store
+
 # NOTES:
     disk based io.Reader/Writer need to be closed explicitly 
     bytes.Buffer , in-memory 

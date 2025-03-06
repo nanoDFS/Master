@@ -32,9 +32,9 @@ func main() {
 	// addCS(":9001")
 	// addCS(":8004")
 
-	go test(":9000", 0)
-	go test(":8001", 1)
-	go test(":8003", 2)
+	// go test(":9000", 0)
+	// go test(":8001", 1)
+	// go test(":8003", 2)
 
 	port := utils.RandLocalAddr()
 	m, err := monitor.NewMonitor(port)

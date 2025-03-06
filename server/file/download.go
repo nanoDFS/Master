@@ -15,7 +15,7 @@ func (t Server) DownloadFile(ctx context.Context, req *fms.FileDownloadReq) (*fm
 	fileHandler := metadata.GetFileController()
 	file, err := fileHandler.Get(req.FileId)
 	if err != nil {
-		return nil, fmt.Errorf("failed to delete file, %v", err)
+		return nil, fmt.Errorf("failed to read file, %v", err)
 	}
 
 	token, err := auth.NewAuth().AuthorizeRead(req.UserId, *file, *file.GetACL(), file.Size.Get()) // TODO: sending *file might cause concurrency issue
