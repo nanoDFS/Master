@@ -21,7 +21,7 @@ func createSingleMaster(faddr string, caddr string) {
 func main() {
 	utils.InitLog()
 
-	createSingleMaster(os.Getenv("FADDR"), os.Getenv("CADDR"))
+	createSingleMaster(os.Getenv("FILE_METADATA_ADDR"), os.Getenv("CS_METADATA_ADDR"))
 
 	port := utils.RandLocalAddr()
 	m, err := monitor.NewMonitor(port)
