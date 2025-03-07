@@ -1,2 +1,4 @@
 Chunk:
   size: 10240
+Log:
+  path: ./log/master.log

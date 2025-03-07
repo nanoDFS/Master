@@ -13,6 +13,9 @@ type Config struct {
 	Chunk struct {
 		Size int64 `yaml:"size"`
 	} `yaml:"Chunk"`
+	Log struct {
+		Path string `yaml:"path"`
+	} `yaml:"Log"`
 }
 
 var mu sync.RWMutex = sync.RWMutex{}
@@ -24,7 +27,7 @@ func LoadConfig() *Config {
 	if config != nil {
 		return config
 	}
-	data, err := os.ReadFile("/Users/nagarajpoojari/Desktop/learn/nanoDFS/Master/config.yaml")
+	data, err := os.ReadFile("./config.yaml")
 	if err != nil {
 		log.Fatalf("error reading file: %v", err)
 	}
