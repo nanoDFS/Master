@@ -64,6 +64,17 @@ func (t *ChunkServerMetadata) Drop(addr string) {
 	t.chunkServers.Delete(addr)
 }
 
+func (t *ChunkServerMetadata) GetAllActiveChunkServers() []*ChunkServer {
+	allCs := t.chunkServers.Values()
+	activeCs := []*ChunkServer{}
+	for _, cs := range allCs {
+		if cs.GetStatus() == Active {
+			activeCs = append(activeCs, cs)
+		}
+	}
+	return activeCs
+}
+
 func (t *ChunkServerMetadata) GetAllChunkServers() []*ChunkServer {
 	return t.chunkServers.Values()
 }
