@@ -34,7 +34,7 @@ func (t *HealthClient) start() {
 		case <-t.quitChan:
 			return
 		default:
-			log.Info("PING: started")
+			log.Debugf("PING: started")
 			for _, s := range t.chunkServerMetadata.GetAllChunkServers() {
 				go func(s *cs.ChunkServer) {
 					t.ping(s)
