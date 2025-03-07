@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/charmbracelet/log"
 
@@ -20,7 +21,7 @@ func createSingleMaster(faddr string, caddr string) {
 func main() {
 	utils.InitLog()
 
-	createSingleMaster("master:9000", "master:9001")
+	createSingleMaster(os.Getenv("FADDR"), os.Getenv("CADDR"))
 
 	port := utils.RandLocalAddr()
 	m, err := monitor.NewMonitor(port)
