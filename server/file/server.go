@@ -49,12 +49,16 @@ func (t *FileMetadataServer) Stop() {
 	t.server.Stop()
 }
 
-func getChunkServers(file *metadata.File) []*fms.ChunkServer {
+func getChunkServers(file *metadata.File) ([]*fms.ChunkServer, error) {
 	var chunk_servers []*fms.ChunkServer
-	for _, addr := range file.GetChunkServers() {
+	cs, err := file.GetChunkServers()
+	if err != nil {
+		return nil, err
+	}
+	for _, addr := range cs {
 		chunk_servers = append(chunk_servers, &fms.ChunkServer{
 			Address: addr,
 		})
 	}
-	return chunk_servers
+	return chunk_servers, nil
 }

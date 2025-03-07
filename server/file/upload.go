@@ -19,7 +19,12 @@ func (t Server) UploadFile(ctx context.Context, req *fms.FileUploadReq) (*fms.Up
 	file := fileHandler.Create(req.FileId, req.UserId, access, req.Size)
 
 	token, _ := auth.NewAuth().AuthorizeWrite(req.UserId, *file, *file.GetACL(), file.Size.Get())
-	chunk_servers := getChunkServers(file)
+	chunk_servers, err := getChunkServers(file)
+	if err != nil {
+		return &fms.UploadResp{
+			Success: false,
+		}, err
+	}
 
 	fmt.Println("Sent token ", string(token))
 

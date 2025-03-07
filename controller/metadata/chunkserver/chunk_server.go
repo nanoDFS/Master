@@ -33,6 +33,10 @@ func (t *ChunkServer) GetStatus() Status {
 	return t.status.Get()
 }
 
+func (t *ChunkServer) IsActive() bool {
+	return t.status.Get() == Active
+}
+
 func (t *ChunkServer) SetStatus(status Status) {
 	t.status.Set(status) // TODO: Should I keep ChunkServer when it becomes inactive
 }
