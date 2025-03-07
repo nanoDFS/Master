@@ -42,13 +42,17 @@ func (t *File) GetID() string {
 	return t.id
 }
 
-func (t *File) GetChunkServers() []string {
+func (t *File) GetChunkServers() ([]string, error) {
 	var chunk_servers []string
 	for i := range t.chunks.Size() {
 		res, _ := t.chunks.Get(i)
-		chunk_servers = append(chunk_servers, res.Primary.Get().StreamingAddr.String())
+		replica, err := res.GetActiveReplica()
+		if err != nil {
+			return nil, err
+		}
+		chunk_servers = append(chunk_servers, replica.StreamingAddr.String())
 	}
-	return chunk_servers
+	return chunk_servers, nil
 }
 
 // FileController is a singleton class, provides API for file system metadata

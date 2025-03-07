@@ -25,7 +25,12 @@ func (t Server) DownloadFile(ctx context.Context, req *fms.FileDownloadReq) (*fm
 		}, err
 	}
 
-	chunk_servers := getChunkServers(file)
+	chunk_servers, err := getChunkServers(file)
+	if err != nil {
+		return &fms.DownloadResp{
+			Success: false,
+		}, err
+	}
 
 	log.Infof("File download has been initiated successfully for fileId: %s", req.GetFileId())
 	log.Debugf("Selected chunk servers: %s", chunk_servers)

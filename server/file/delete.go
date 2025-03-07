@@ -24,7 +24,12 @@ func (t Server) DeleteFile(ctx context.Context, req *fms.FileDeleteReq) (*fms.De
 			Success: false,
 		}, err
 	}
-	chunk_servers := getChunkServers(file)
+	chunk_servers, err := getChunkServers(file)
+	if err != nil {
+		return &fms.DeleteResp{
+			Success: false,
+		}, err
+	}
 
 	log.Infof("File delete has been initiated successfully for fileId: %s", req.GetFileId())
 	log.Debugf("Selected chunk servers: %s", chunk_servers)
