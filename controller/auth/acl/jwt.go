@@ -1,10 +1,10 @@
 package acl
 
 import (
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/nanoDFS/Master/utils/secrets"
 )
 
 type Claims struct {
@@ -23,11 +23,11 @@ func NewJWT() *JWT {
 }
 
 func (t *JWT) Generate(claim *Claims) ([]byte, error) {
-	secretKeyString := secrets.Get("JWT_SECRETE_KEY")
+	secretKeyString := os.Getenv("JWT_SECRETE_KEY")
 	secretKey := []byte(secretKeyString)
 
 	claim.RegisteredClaims = jwt.RegisteredClaims{
-		Issuer:    secrets.Get("JWT_ISSUER"),
+		Issuer:    os.Getenv("JWT_ISSUER"),
 		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 1)),
 		IssuedAt:  jwt.NewNumericDate(time.Now()),
 	}
