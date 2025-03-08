@@ -14,6 +14,7 @@ FROM alpine:latest
 WORKDIR /root/
 
 COPY --from=builder /app/app .
+RUN mkdir log
 COPY config.yaml .      
 COPY .env .     
 

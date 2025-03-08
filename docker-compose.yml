@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  master:
+    image: master:latest  
+    container_name: master
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - master_logs:/root/log
+    networks:
+      - app_network
+    environment:
+      - JWT_SECRETE_KEY=somerandomkey
+      - JWT_ISSUER=Master
+      - FILE_METADATA_ADDR=master:9000
+      - CS_METADATA_ADDR=master:9001
+
+  slave0:
+    image: slave:latest 
+    depends_on:
+      - master
+    container_name: slave0
+    ports:
+      - "9800:9800"
+      - "8000:8000"
+    volumes:
+      - slave_data0:/root/data
+    networks:
+      - app_network
+    environment:
+      - JWT_SECRETE_KEY=somerandomkey
+      - JWT_ISSUER=Master
+      - MONITOR_ADDR=slave0:9800
+      - STREAMING_ADDR=slave0:8000
+      - MASTER_ADDR=master:9001
+      - LOG_PATH=./data/slave0.log
+  slave1:
+    image: slave:latest 
+    container_name: slave1
+    depends_on:
+      - master
+    ports:
+      - "9801:9801"
+      - "8001:8001"
+    volumes:
+      - slave_data1:/root/data
+    networks:
+      - app_network
+    environment:
+      - JWT_SECRETE_KEY=somerandomkey
+      - JWT_ISSUER=Master
+      - MONITOR_ADDR=slave1:9801
+      - STREAMING_ADDR=slave1:8001
+      - MASTER_ADDR=master:9001
+      - LOG_PATH=./data/slave1.log
+  slave2:
+    image: slave:latest 
+    container_name: slave2
+    depends_on:
+      - master
+    ports:
+      - "9802:9802"
+      - "8002:8002"
+    volumes:
+      - slave_data2:/root/data
+    networks:
+      - app_network
+    environment:
+      - JWT_SECRETE_KEY=somerandomkey
+      - JWT_ISSUER=Master
+      - MONITOR_ADDR=slave2:9802
+      - STREAMING_ADDR=slave2:8002
+      - MASTER_ADDR=master:9001
+      - LOG_PATH=./data/slave2.log
+
+volumes:
+  master_logs:
+  slave_data0:
+  slave_data1:
+  slave_data2:
+
+networks:
+  app_network:
+    driver: bridge
